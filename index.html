@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Roermond — Nominatim client-side demo</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <style>
+    body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial; margin: 0; padding: 1rem; }
+    .container { max-width: 900px; margin: 0 auto; }
+    #map { height: 70vh; width: 100%; border: 1px solid #ddd; border-radius: 8px; }
+    pre { background:#f7f7f7; padding:8px; border-radius:6px; overflow:auto }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Roermond</h1>
+    <p>Coördinaten: <strong id="coords">—</strong></p>
+    <div id="map"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+  const lat = 51.1933903;
+  const lon = 5.9882649;
+
+  // Toon coördinaten boven de kaart
+  document.getElementById('coords').textContent = lat + ', ' + lon;
+
+  // Init kaart gecentreerd op de opgegeven coördinaten
+  const map = L.map('map').setView([lat, lon], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Marker toevoegen
+  const marker = L.marker([lat, lon]).addTo(map);
+  marker.bindPopup(`Roermond<br>Lat: ${lat}<br>Lon: ${lon}`).openPopup();
+  document.getElementById('raw').textContent = JSON.stringify(rawData, null, 2);
+</script>
+</body>
+</html>
