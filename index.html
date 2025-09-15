@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Roermond — Nominatim client-side demo</title>
+  <title>Gilde Opleidingen — Locaties</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <style>
     body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial; margin: 0; padding: 1rem; }
@@ -14,28 +14,44 @@
 </head>
 <body>
   <div class="container">
-    <h1>Roermond</h1>
-    <p>Coördinaten: <strong id="coords">—</strong></p>
+    <h1>Gilde Opleidingen — Locaties</h1>
+    <p>Gevonden locaties: <strong id="count">—</strong></p>
     <div id="map"></div>
+  </div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
-  const lat = 51.1933903;
-  const lon = 5.9882649;
+  // 🔹 Lijst met Gilde locaties + coördinaten
+  const gildeLocations = [
+    { name: "Gilde Opleidingen — Roermond, Kasteel Hillenraedtstraat", lat: 51.1914, lon: 5.9871 },
+    { name: "Gilde Opleidingen — Roermond, Bredeweg", lat: 51.2007, lon: 5.9839 },
+    { name: "Gilde Opleidingen — Venlo, Tegelseweg", lat: 51.3747, lon: 6.1722 },
+    { name: "Gilde Opleidingen — Venray, Henri Dunantstraat", lat: 51.5226, lon: 5.9788 },
+    { name: "Gilde Opleidingen — Weert, Parallelweg", lat: 51.2501, lon: 5.7095 },
+    { name: "Gilde Opleidingen — Weert, Drakesteyn", lat: 51.2549, lon: 5.7012 }
+  ];
 
-  // Toon coördinaten boven de kaart
-  document.getElementById('coords').textContent = lat + ', ' + lon;
-
-  // Init kaart gecentreerd op de opgegeven coördinaten
-  const map = L.map('map').setView([lat, lon], 13);
+  // Init kaart
+  const map = L.map('map').setView([51.2, 6.0], 10);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
 
-  // Marker toevoegen
-  const marker = L.marker([lat, lon]).addTo(map);
-  marker.bindPopup(`Roermond<br>Lat: ${lat}<br>Lon: ${lon}`).openPopup();
-  document.getElementById('raw').textContent = JSON.stringify(rawData, null, 2);
+  // 🔹 Functie om markers toe te voegen
+  function addMarkers(locations) {
+    const bounds = L.latLngBounds([]);
+    locations.forEach(loc => {
+      const marker = L.marker([loc.lat, loc.lon]).addTo(map);
+      marker.bindPopup(`<strong>${loc.name}</strong><br>Lat: ${loc.lat}<br>Lon: ${loc.lon}`);
+      bounds.extend([loc.lat, loc.lon]);
+    });
+    map.fitBounds(bounds.pad(0.2));
+    document.getElementById('count').textContent = locations.length;
+  }
+
+  // Zet alle Gilde markers
+  addMarkers(gildeLocations);
 </script>
 </body>
 </html>
