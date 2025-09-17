@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+   #map {height: 400px;}
+  </style>
+</head>
+<body>
+    <div id="map"></div>
+  </div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    /**   
+*Functie om markers van meerdere plaatsen op de kaart te zetten
+*@param {Array} plaatsen - Array van plaatsnamen als strings*/
+
+function plaatsMarkers(plaatsen) {// Maak de kaart aan en centreer op Nederland
+
+  let kaart = L.map('map').setView([52,5],7);// Voeg de OpenStreetMap tiles toe als achtergrond
+
+ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap contributors'
+}).addTo(kaart);
+
+
+
+      // Loop door alle opgegeven plaatsnamen
+      for(let plaats of plaatsen) {
+        // Doe een API-request naar Nominatim voor de coördinaten van de plaats
+        fetch('https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(plaats))
+          .then(r=>r.json()) // Zet de response om naar JSON
+          .then(d=>{
+            if(d[0]) { // Controleer of er een resultaat is gevonden
+              let lat=d[0].lat, lon=d[0].lon; // Haal latitude en longitude uit het resultaat
+              // Zet een marker op de kaart op deze coördinaten
+
+              L.marker([lat,lon])
+                .addTo(kaart)
+                .bindPopup(
+                  plaats + // Toon de plaatsnaam
+                  '<br>Lat: ' + lat + // Toon latitude
+                  '<br>Lon: ' + lon   // Toon longitude
+                );
+            }
+          });
+      }
+    }
+
+
+    // Roep de functie aan met een lijst van plaatsen waarvoor je markers wilt tonen
+    plaatsMarkers(["Roermond","Venlo","Belfeld"]);
+  </script>
+</body>
+</html>
+
+
+
+
